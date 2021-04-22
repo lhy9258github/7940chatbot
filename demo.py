@@ -27,7 +27,7 @@ def main():
 	# add schedule job package
 	j = updater.job_queue
 	# the time is UTC, HK_time - 8hours
-	job_daily = j.run_daily(refresh_command, days=(0, 1, 2, 3, 4, 5, 6), time=datetime.time(hour=17, minute=18, second=00))
+	job_daily = j.run_daily(refresh_command, days=(0, 1, 2, 3, 4, 5, 6), time=datetime.time(hour=16, minute=2, second=00))
 	# initialize the db setting
 	init_db()
     # You can set this logging module, so you will know when and why things do not work as expected
@@ -73,6 +73,8 @@ def refresh_command(context: CallbackContext) -> None:
 			ret = [data[user]] * 7
 		else:
 			ret = curr
+		ret.pop(0)
+		ret.append(data[user])
 		path = db.reference("record/")
 		new_record =path.update({
 			"{}".format(user): ret
@@ -126,12 +128,12 @@ def report_command(update: Update, context: CallbackContext) -> None:
 		user = update.effective_chat.id
 		curr = db.reference("record/{}".format(user)).get()
 		if not curr:
-			ret = [0] * 7
+			context.bot.send_message(chat_id=update.effective_chat.id, text="Your record is not in the database, please retry tomorrow")
 		else:
 			ret = curr
-		message = "The average of Calories: " + str(int(sum(ret) / 7))
-		# message = ''.join(str(i)+" " for i in ret)
-		context.bot.send_message(chat_id=update.effective_chat.id, text=message)
+			message = "The average of Calories: " + str(int(sum(ret) / 7))
+			# message = ''.join(str(i)+" " for i in ret)
+			context.bot.send_message(chat_id=update.effective_chat.id, text=message)
 	except (IndexError, ValueError):
 		context.bot.send_message(chat_id=update.effective_chat.id, text='Something wrong, please check.')
 
@@ -166,7 +168,7 @@ def weight_command(update: Update, context: CallbackContext) -> None:
 		context.bot.send_message(chat_id=update.effective_chat.id, text='you must enter the pure number of your weigh with the unit of gram. For example "130".')
 
 def init_db():
-	# replace the json file
+	# replace the json file with env
 	# cred = credentials.Certificate("mychatbot-e744c-firebase-adminsdk-2j534-cd3d335d16.json")
 	cred = credentials.Certificate("mychatbot-e744c-firebase-adminsdk-2j534-cd3d335d16.json")
 	firebase_admin.initialize_app(cred, {
