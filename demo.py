@@ -3,7 +3,7 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, Callb
 import os
 import configparser
 import logging, datetime, pytz
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 # import redis
 
 
@@ -42,6 +42,7 @@ def main():
 	dispatcher.add_handler(CommandHandler("help", help_command))
 	dispatcher.add_handler(CommandHandler("eat", eat_command))
 	dispatcher.add_handler(CommandHandler("report", report_command))
+	dispatcher.add_handler(CommandHandler("weight", weight_command))
 
     # To start the bot:
 	updater.start_polling()
@@ -69,11 +70,9 @@ def refresh_command(context: CallbackContext) -> None:
 		# upload record data
 		curr = db.reference("record/{}".format(user)).get()
 		if not curr:
-			ret = [0] * 7
+			ret = [data[user]] * 7
 		else:
 			ret = curr
-		ret.pop(0)
-		ret.append(data[user])
 		path = db.reference("record/")
 		new_record =path.update({
 			"{}".format(user): ret
@@ -136,7 +135,39 @@ def report_command(update: Update, context: CallbackContext) -> None:
 	except (IndexError, ValueError):
 		context.bot.send_message(chat_id=update.effective_chat.id, text='Something wrong, please check.')
 
+def weight_command(update: Update, context: CallbackContext) -> None:
+	try:
+		user = update.effective_chat.id
+		wegs = db.reference("weight/{}".format(user)).get()
+		path = db.reference("weight/")
+		weg_curr = int(context.args[0])
+		if not wegs:
+			ret = [weg_curr] * 7
+			new_user = path.update({
+				"{}".format(user): ret
+			})
+			context.bot.send_message(chat_id=update.effective_chat.id, text='You are the new user, your current weight is {}, you can continue to record your weight value,so we can make an analysis for you.'.format(weg_curr))
+		else:
+			ret = wegs
+			averg_weg = int(sum(ret)/ len(ret))
+			message = "The average of your weight is: " + str(averg_weg)
+			if averg_weg > weg_curr:
+				context.bot.send_message(chat_id=update.effective_chat.id, text=message + ' your weight is lower than average weight, good job!')
+			elif averg_weg == weg_curr:
+				context.bot.send_message(chat_id=update.effective_chat.id, text=message + ' your weight is equal to average weight, keep doing!')
+			elif averg_weg < weg_curr:
+				context.bot.send_message(chat_id=update.effective_chat.id, text=message + ' your weight is higher than average weight, be careful!')
+			ret.pop(0)
+			ret.append(weg_curr)
+			new_user = path.update({
+				"{}".format(user): ret
+			})
+	except (IndexError, ValueError):
+		context.bot.send_message(chat_id=update.effective_chat.id, text='you must enter the pure number of your weigh with the unit of gram. For example "130".')
+
 def init_db():
+	# replace the json file
+	# cred = credentials.Certificate("mychatbot-e744c-firebase-adminsdk-2j534-cd3d335d16.json")
 	cred = credentials.Certificate("mychatbot-e744c-firebase-adminsdk-2j534-cd3d335d16.json")
 	firebase_admin.initialize_app(cred, {
 		'databaseURL': 'https://mychatbot-e744c-default-rtdb.firebaseio.com/'
