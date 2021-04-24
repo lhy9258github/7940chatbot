@@ -33,9 +33,11 @@ jobs:
       run: pip install -r requirements.txt
     
     - name: Create environment variances
+      with:
+        path: .
       run: |
-        !export TELEGRAM=${{ secrets.TELEGRAM }}
-        !export FIREBASE=${{ secrets.FIREBASE }}
+        export TELEGRAM=${{ secrets.TELEGRAM }}
+        export FIREBASE=${{ secrets.FIREBASE }}
       
     # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
     
