@@ -101,11 +101,11 @@ def eat_command(update: Update, context: CallbackContext) -> None:
 		ret = 0.0
 	else:
 		ret = curr
-	logging.info(context.args[0] + ' ' + context.args[1])
-	food = context.args[0]
-	val = float(context.args[1])
 		
 	try:
+        logging.info(context.args[0] + ' ' + context.args[1])
+        food = context.args[0]
+        val = float(context.args[1])
 		if food not in foods:
 			context.bot.send_message(chat_id=update.effective_chat.id, text='We only support rice, meat and vegetable, please type a correct food.')
 		elif food == foods[0]:
