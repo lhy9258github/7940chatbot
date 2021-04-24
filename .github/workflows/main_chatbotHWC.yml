@@ -33,11 +33,13 @@ jobs:
       run: pip install -r requirements.txt
     
     - name: Create environment variances
+      shell: bash
       run: |
         echo ${{ secrets.TELEGRAM }}
         echo ${{ secrets.FIREBASE }}
       env:
         TELEGRAM: ${{ secrets.TELEGRAM }}
+        FIREBASE: ${{ secrets.FIREBASE }}
       
     # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
     
