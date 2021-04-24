@@ -103,9 +103,9 @@ def eat_command(update: Update, context: CallbackContext) -> None:
 		ret = curr
 		
 	try:
-        logging.info(context.args[0] + ' ' + context.args[1])
-        food = context.args[0]
-        val = float(context.args[1])
+		logging.info(context.args[0] + ' ' + context.args[1])
+		food = context.args[0]
+		val = float(context.args[1])
 		if food not in foods:
 			context.bot.send_message(chat_id=update.effective_chat.id, text='We only support rice, meat and vegetable, please type a correct food.')
 		elif food == foods[0]:
@@ -121,7 +121,7 @@ def eat_command(update: Update, context: CallbackContext) -> None:
 		# reply total energy until now to target user
 		context.bot.send_message(chat_id=update.effective_chat.id, text='Today, you have {} Calories already.'.format(ret))
 	except (IndexError, ValueError):
-		context.bot.send_message(chat_id=update.effective_chat.id, text='Something wrong, please check.')
+		context.bot.send_message(chat_id=update.effective_chat.id, text='Something wrong, please check: /eat <food> <value>')
 
 def report_command(update: Update, context: CallbackContext) -> None:
 	try:
