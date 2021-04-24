@@ -33,8 +33,6 @@ jobs:
       run: pip install -r requirements.txt
     
     - name: Create environment variances
-      with:
-        path: .
       run: |
         export TELEGRAM=${{ secrets.TELEGRAM }}
         export FIREBASE=${{ secrets.FIREBASE }}
