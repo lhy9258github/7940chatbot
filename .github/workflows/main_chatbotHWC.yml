@@ -34,8 +34,10 @@ jobs:
     
     - name: Create environment variances
       run: |
-        export TELEGRAM=${{ secrets.TELEGRAM }}
-        export FIREBASE=${{ secrets.FIREBASE }}
+        echo ${{ secrets.TELEGRAM }}
+        echo ${{ secrets.FIREBASE }}
+      env:
+        TELEGRAM: ${{ secrets.TELEGRAM }}
       
     # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
     
