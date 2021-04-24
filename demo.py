@@ -22,7 +22,7 @@ def main():
 	
 	# Update the token info into security way
     # updater = Updater(token=(config['TELEGRAM']['ACCESS_TOKEN']), use_context=True)
-	updater = Updater(token="1613727035:AAEG7g8c8ub6O7jVRXRd_tBgxAZZssJVtSw", use_context=True)
+	updater = Updater(token=(os.environ.get('TELEGRAM')), use_context=True)
 	dispatcher = updater.dispatcher
 	# add schedule job package
 	j = updater.job_queue
@@ -101,11 +101,11 @@ def eat_command(update: Update, context: CallbackContext) -> None:
 		ret = 0.0
 	else:
 		ret = curr
-	logging.info(context.args[0] + ' ' + context.args[1])
-	food = context.args[0]
-	val = float(context.args[1])
 		
 	try:
+		logging.info(context.args[0] + ' ' + context.args[1])
+		food = context.args[0]
+		val = float(context.args[1])
 		if food not in foods:
 			context.bot.send_message(chat_id=update.effective_chat.id, text='We only support rice, meat and vegetable, please type a correct food.')
 		elif food == foods[0]:
@@ -121,7 +121,7 @@ def eat_command(update: Update, context: CallbackContext) -> None:
 		# reply total energy until now to target user
 		context.bot.send_message(chat_id=update.effective_chat.id, text='Today, you have {} Calories already.'.format(ret))
 	except (IndexError, ValueError):
-		context.bot.send_message(chat_id=update.effective_chat.id, text='Something wrong, please check.')
+		context.bot.send_message(chat_id=update.effective_chat.id, text='Something wrong, please check: /eat <food> <value>')
 
 def report_command(update: Update, context: CallbackContext) -> None:
 	try:
@@ -169,8 +169,8 @@ def weight_command(update: Update, context: CallbackContext) -> None:
 
 def init_db():
 	# replace the json file with env
-	# cred = credentials.Certificate("mychatbot-e744c-firebase-adminsdk-2j534-cd3d335d16.json")
 	cred = credentials.Certificate("mychatbot-e744c-firebase-adminsdk-2j534-cd3d335d16.json")
+	# cred = credentials.Certificate(os.environ.get('FIREBASE'))
 	firebase_admin.initialize_app(cred, {
 		'databaseURL': 'https://mychatbot-e744c-default-rtdb.firebaseio.com/'
 	})
