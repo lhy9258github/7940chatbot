@@ -26,9 +26,8 @@ jobs:
       run: |
         python -m venv venv
         source venv/bin/activate
+
         python -m pip install --upgrade pip
-        # export TELEGRAM=${{ secrets.TELEGRAM }}
-        # export FIREBASE=${{ secrets.FIREBASE }}
     
     - name: Install dependencies
       run: pip install -r requirements.txt
