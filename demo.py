@@ -169,8 +169,8 @@ def weight_command(update: Update, context: CallbackContext) -> None:
 
 def init_db():
 	# replace the json file with env
-	# cred = credentials.Certificate("mychatbot-e744c-firebase-adminsdk-2j534-cd3d335d16.json")
-	cred = credentials.Certificate(os.environ.get('FIREBASE'))
+	cred = credentials.Certificate("mychatbot-e744c-firebase-adminsdk-2j534-cd3d335d16.json")
+	# cred = credentials.Certificate(os.environ.get('FIREBASE'))
 	firebase_admin.initialize_app(cred, {
 		'databaseURL': 'https://mychatbot-e744c-default-rtdb.firebaseio.com/'
 	})
